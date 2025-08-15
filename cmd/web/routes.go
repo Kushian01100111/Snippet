@@ -9,7 +9,7 @@ type neuteredFileSystem struct {
 	fs http.FileSystem
 }
 
-func (app *application) routes() *http.ServeMux {
+func (app *application) routes() http.Handler {
 	server := http.NewServeMux()
 
 	// -> Problemas con el file server, debe de devolver 404 error en vez de 500 error
@@ -21,7 +21,7 @@ func (app *application) routes() *http.ServeMux {
 	server.HandleFunc("GET /snippet/create", app.snippetCreate)
 	server.HandleFunc("POST /snippet/create", app.snippetCreatePost)
 
-	return server
+	return app.recoverPanic(app.logRequest(commonHeaders(server)))
 }
 
 func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
