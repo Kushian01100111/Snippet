@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 	"path/filepath"
+
+	"github.com/justinas/alice"
 )
 
 type neuteredFileSystem struct {
@@ -21,7 +23,9 @@ func (app *application) routes() http.Handler {
 	server.HandleFunc("GET /snippet/create", app.snippetCreate)
 	server.HandleFunc("POST /snippet/create", app.snippetCreatePost)
 
-	return app.recoverPanic(app.logRequest(commonHeaders(server)))
+	standard := alice.New(app.recoverPanic, app.logRequest, commonHeaders)
+
+	return standard.Then(server)
 }
 
 func (nfs neuteredFileSystem) Open(path string) (http.File, error) {
