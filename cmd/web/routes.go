@@ -25,6 +25,12 @@ func (app *application) routes() http.Handler {
 	server.Handle("GET /snippet/create", dynamic.ThenFunc(app.snippetCreate))
 	server.Handle("POST /snippet/create", dynamic.ThenFunc(app.snippetCreatePost))
 
+	server.Handle("GET /user/signup", dynamic.ThenFunc(app.userSignup))
+	server.Handle("POST /user/signup", dynamic.ThenFunc(app.userSignupPost))
+	server.Handle("GET /user/login", dynamic.ThenFunc(app.userLoginin))
+	server.Handle("POST /user/login", dynamic.ThenFunc(app.userLoginPost))
+	server.Handle("POST /user/logout", dynamic.ThenFunc(app.userLogoutPost))
+
 	standard := alice.New(app.recoverPanic, app.logRequest, commonHeaders)
 
 	return standard.Then(server)
